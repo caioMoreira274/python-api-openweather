@@ -14,10 +14,14 @@ class Sunrise_Sunset:
         res = requests.get(url='https://api.sunrise-sunset.org/json?lat='+geo.lat+'&lng='+geo.lon+'&date='+self.hoje
             ).json()    
         return  res     
+
 class Geocoding:
     def __init__(self,nome_cidade):
+
         self.nome_cidade = nome_cidade
         self.pegar_lat_lon()
+
+
     def pegar_lat_lon(self):
         res = requests.get('http://api.openweathermap.org/geo/1.0/direct?q='+self.nome_cidade+'&appid=b125732752fad04c6ce7e29448cf95fd'
             ).json()
@@ -33,55 +37,40 @@ class ApiWeather:
             'https://api.openweathermap.org/data/2.5/weather?lat='+self.geo.lat+'&lon='+self.geo.lon+'&appid=b125732752fad04c6ce7e29448cf95fd&units=metric&lang=pt_br'
             ).json()
         return res
-
     def pegar_tempo(self):
-        print('TEMPO''\nTempo: ' + self.dados['weather'][0]['main'] + '\nDescrição: ' + self.dados['weather'][0]['description'] + '\n\n')
         print('\nTempo: ' + self.dados['weather'][0]['main'] + '\nDescrição: ' + self.dados['weather'][0]['description'])
-
+    
     def pegar_dados_temperatura(self):
-        print('TEMPERATURA''\nTempreratura atual: ' + str(self.dados['main']['temp']) + '°C' + '\nSensação de: ' + str(self.dados['main']['feels_like']) + '°C' + '\n   Temperatura máxima: ' + str(self.dados['main']['temp_max']) + '°C' + '\n   Temperatura mínima: ' + str(self.dados['main']['temp_min']) + '°C' + '\n\n')
         print('\nTempreratura atual: ' + str(self.dados['main']['temp']) + '°C' + '\nSensação de: ' + str(self.dados['main']['feels_like']) + '°C' + '\nTemperatura máxima: ' + str(self.dados['main']['temp_max']) + '°C' + '\nTemperatura mínima: ' + str(self.dados['main']['temp_min']) + '°C')
-
+    
     def pegar_humidade(self):
-        print('Humidade relativa em: ' + str(self.dados['main']['humidity']) + '%')
         print('\nHumidade relativa em ' + str(self.dados['main']['humidity']) + '%')
-
+    
     def pegar_dados_nascer_do_sol(self):            
-
 
         nascer_do_sol_utc0 = sun.sunrise
         nascer_do_sol_datetime = datetime.strptime(nascer_do_sol_utc0, "%I:%M:%S %p")
         nascer_do_sol_utc3 = nascer_do_sol_datetime - timedelta(hours=3)
-
+        
         nascer_do_sol_utc3_str = nascer_do_sol_utc3.strftime("%I:%M:%S %p")
-
-        print('Nascer do sol hoje: ' + nascer_do_sol_utc3_str)
         print('\nNascer do sol hoje ' + nascer_do_sol_utc3_str)
-
+                
     def pegar_dados_por_do_sol(self):
-
         nascer_do_sol_utc0 = sun.sunset
         nascer_do_sol_datetime = datetime.strptime(nascer_do_sol_utc0, "%I:%M:%S %p")
         nascer_do_sol_utc3 = nascer_do_sol_datetime - timedelta(hours=3)
-
+        
         nascer_do_sol_utc3_str = nascer_do_sol_utc3.strftime("%I:%M:%S %p")
-
-        print('Pôr do sol hoje: ' + nascer_do_sol_utc3_str)
         print('\nPôr do sol hoje ' + nascer_do_sol_utc3_str)
-
-
+    
 geo = Geocoding('Bauru')
 previsao_cidade = ApiWeather(geo)
 sun = Sunrise_Sunset()
 
 
 
-#previsao_cidade.pegar_tempo()
-#previsao_cidade.pegar_dados_temperatura()
-#previsao_cidade.pegar_dados_nascer_por_do_sol()
-#previsao_cidade.pegar_dados_nascer_do_sol()
-#previsao_cidade.pegar_dados_por_do_sol()
 previsao_cidade.pegar_tempo()
+previsao_cidade.pegar_tempo() 
 previsao_cidade.pegar_dados_temperatura()
 previsao_cidade.pegar_dados_por_do_sol()
 previsao_cidade.pegar_dados_nascer_do_sol()
