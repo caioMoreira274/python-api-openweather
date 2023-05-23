@@ -6,6 +6,24 @@ class Timezones:
     def __init__ (self):
         self.timezone_hours =   {"-43200":-12,"-39600":-11,"-3600":-10,"-34200":-9,"-32400":-9,"-28800":-8,"-25200":-7,"-21600":-6,"-18000":-5,"-16200":-4,"-14400":-4,"-12600":-3,"-10800":-3,"-7200":-2,"-3600":-1,"0":0,"50400":14,"46800":13,"45900":12,"43200":12,"41400":11,"39600":11,"3600":10,"34200":9,"32400":9,"28800":8,"25200":7,"21600":6,"18000":5,"16200":4,"14400":4,"12600":3,"10800":3,"7200":2,"3600":1}
         self.timezone_minutes = {"-43200":-00,"-39600":-00,"-3600":-00,"-34200":-30,"-32400":-00,"-28800":-00,"-25200":-00,"-21600":-00,"-18000":-00,"-16200":-30,"-14400":-00,"-12600":-30,"-10800":-00,"-7200":-00,"-3600":-00,"0":00,"50400":00,"46800":00,"45900":45,"43200":00,"41400":30,"39600":00,"36000":00,"34200":30,"32400":00,"28800":00,"25200":00,"21600":00,"18000":00,"16200":30,"14400":00,"12600":30,"10800":00,"7200":00,"3600":00}
+        self.code = str(previsao_cidade.dados['timezone'])
+        self.hora = self.horas_identificada()
+        self.minuto = self.minutos_identificados()
+
+    def horas_identificada(self):
+        if self.code in self.timezone_hours:
+            valor_correspondente = self.timezone_hours[self.code]
+            return valor_correspondente
+        else:
+            print("Valor externo não encontrado no dicionário")
+
+    def minutos_identificados(self):
+        if self.code in self.timezone_minutes:
+            valor_correspondente = self.timezone_minutes[self.code]
+            return valor_correspondente
+        else:
+            print("Valor externo não encontrado no dicionário")
+
 
 
 class Sunrise_Sunset:    
@@ -41,10 +59,9 @@ class ApiWeather:
             'https://api.openweathermap.org/data/2.5/weather?lat='+self.geo.lat+'&lon='+self.geo.lon+'&appid=b125732752fad04c6ce7e29448cf95fd&units=metric&lang=pt_br'
             ).json()
         return res
-
+    
     def pegar_timezone(self):
         return str(self.dados['timezone'])
-
     def pegar_tempo(self):
         print('\nTempo: ' + self.dados['weather'][0]['main'] + '\nDescrição: ' + self.dados['weather'][0]['description'])
     
@@ -58,40 +75,47 @@ class ApiWeather:
 
         nascer_do_sol_utc0 = sun.sunrise
         nascer_do_sol_datetime = datetime.strptime(nascer_do_sol_utc0, "%I:%M:%S %p")
-        nascer_do_sol_utc3 = nascer_do_sol_datetime - timedelta(hours=3)
         nascer_do_sol_utc3 = nascer_do_sol_datetime + timedelta(hours=-3)
+        nascer_do_sol_utc3 = nascer_do_sol_datetime + timedelta(hours=time.hora)
+        nascer_do_sol_utc = nascer_do_sol_utc3 + timedelta(minutes=time.minuto)
 
         nascer_do_sol_utc3_str = nascer_do_sol_utc3.strftime("%I:%M:%S %p")
+        nascer_do_sol_utc3_str = nascer_do_sol_utc.strftime("%I:%M:%S %p")
 
         print('\nNascer do sol hoje ' + nascer_do_sol_utc3_str)
-                
+
     def pegar_dados_por_do_sol(self):
         nascer_do_sol_utc0 = sun.sunset
         nascer_do_sol_datetime = datetime.strptime(nascer_do_sol_utc0, "%I:%M:%S %p")
-        nascer_do_sol_utc3 = nascer_do_sol_datetime - timedelta(hours=3)
         nascer_do_sol_utc3 = nascer_do_sol_datetime + timedelta(hours=-3)
+        por_do_sol_utc0 = sun.sunset
+        por_do_sol_datetime = datetime.strptime(por_do_sol_utc0, "%I:%M:%S %p")
+        por_do_sol_utc3 = por_do_sol_datetime + timedelta(hours=time.hora)
+        por_do_sol_utc = por_do_sol_utc3 + timedelta(minutes=time.hora)
 
         nascer_do_sol_utc3_str = nascer_do_sol_utc3.strftime("%I:%M:%S %p")
+        por_do_sol_utc3_str = por_do_sol_utc.strftime("%I:%M:%S %p")
 
         print('\nPôr do sol hoje ' + nascer_do_sol_utc3_str)
+        print('\nPôr do sol hoje ' + por_do_sol_utc3_str)
 
 
 
 
 geo = Geocoding('Bauru')
+geo = Geocoding('Cabul')
 previsao_cidade = ApiWeather(geo)
 sun = Sunrise_Sunset()
+time = Timezones()
 
 
 
-previsao_cidade.pegar_tempo() 
-previsao_cidade.pegar_dados_temperatura()
-previsao_cidade.pegar_dados_nascer_do_sol()
-previsao_cidade.pegar_dados_por_do_sol()
-previsao_cidade.pegar_humidade()
 #previsao_cidade.pegar_tempo() 
 #previsao_cidade.pegar_dados_temperatura()
 #previsao_cidade.pegar_humidade()
 #previsao_cidade.pegar_dados_nascer_do_sol()
 #previsao_cidade.pegar_dados_por_do_sol()
 print(previsao_cidade.pegar_timezone())
+previsao_cidade.pegar_dados_nascer_do_sol()
+previsao_cidade.pegar_dados_por_do_sol()
+#print(previsao_cidade.pegar_timezone())
